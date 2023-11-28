@@ -1,8 +1,8 @@
 <section>
-        <div class="mainCon">
-            <div class="registerTitle">회원가입</div>
-            <div class="registerBox">
-            <form action="member_process.php?mode=register" method="post">
+    <div class="mainCon">
+        <div class="registerTitle">회원가입</div>
+        <div class="registerBox">
+            <form action="signup_process.php?mode=register" method="post">
                 <input type="hidden" name="id" value="register">
                 <table class="registerTable">
                     <tr>
@@ -26,19 +26,8 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td>성별</td>
-                        <td><input type="checkbox" name="sex" value="male" checked>남&nbsp;&nbsp;
-                        <input type="checkbox" name="sex" value="female">여</td>
-                        <td></td>
-                    </tr>
-                    <tr>
                         <td>전화번호</td>
                         <td><input type="text" name="tel" placeholder="010-1234-5678"></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>이메일</td>
-                        <td><input type="text" name="email" required></td>
                         <td></td>
                     </tr>
                 </table>
@@ -47,6 +36,6 @@
                     <button onClick="history.back(-1)">취소</button>
                 </div>
             </form>
-            </div>
         </div>
-    </section>
+    </div>
+</section>
