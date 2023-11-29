@@ -81,6 +81,49 @@ $stmt_insert_getoff->bind_param("iis", $custid, $destinationSubwayId,$destinatio
 $stmt_insert_getoff->execute();
 $stmt_insert_getoff->close();
 
+$time_query = "SELECT SUM(s.time) as total_time
+FROM subway s
+WHERE s.subwayid > (
+    SELECT MIN(subwayid)
+    FROM boarding
+    WHERE custid = 1
+) AND s.subwayid <= (
+    SELECT MAX(subwayid)
+    FROM getoff
+    WHERE custid = 1
+)";
+
+// No need for bind_param in this query
+$stmt_time = $conn->prepare($time_query);
+
+// Execute the query directly
+$stmt_time->execute();
+
+$stmt_time->bind_result($total_time);
+$stmt_time->fetch();
+
+$stmt_time->close();
+
+echo "<html lang='en'>
+        <head>
+            <meta charset='UTF-8'>
+            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+            <title>Subway Time</title>
+        </head>
+        <body>
+            <h1>Subway Time</h1>
+            <p>Total Time: $total_time minutes</p>
+	    <p>Debug: Total Time Variable: " . $total_time . "</p>
+        </body>
+      </html>";
+
+// Set SQL_SAFE_UPDATES to 0
+$conn->query("SET SQL_SAFE_UPDATES = 0");
+
+// Delete records from 'getoff' and 'boarding' tables
+$conn->query("DELETE FROM subway.getoff");
+$conn->query("DELETE FROM subway.boarding");
+
 // 연결 종료
 $conn->close();
 ?>
