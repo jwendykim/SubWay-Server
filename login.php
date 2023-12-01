@@ -1,23 +1,24 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"> 
-<title>Join Us</title>
-</head>
-<body>
-<form name="login" method="post" action='login_action.php'>
- <h1>LOGIN</h1>
- <table border="1">
-  <tr>
-   <td>ID</td>
-   <td><input type="text" size="30" name="loginID"></td>
-  </tr>
-  <tr>
-   <td>PASSWORD</td>
-   <td><input type="password" size="30" name="loginpassword"></td>
-  </tr>
- </table>
- <input type="submit" value="LOGIN"><input type=reset value="REWRITE">
-</form>
-</body>
+<?php session_start(); ?>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+    </head>
+    <body>
+        <h2>로그인</h2>
+        <?php if(!isset($_SESSION['user_id']) || !isset($_SESSION['user_name'])) { ?>
+        <form method="post" action="login_ok.php" autocomplete="off">
+            <p>아이디: <input type="text" name="user_id" required></p>
+            <p>비밀번호: <input type="password" name="user_pw" required></p>
+            <p><input type="submit" value="로그인"></p>
+        </form>
+        <small><a href="register.php">처음 오셨나요?</a><small>
+        <?php } else {
+            $user_id = $_SESSION['user_id'];
+            $user_name = $_SESSION['user_name'];
+            echo "<p>$user_name($user_id)님은 이미 로그인되어 있습니다.";
+            echo "<p><button onclick=\"window.location.href='home.php'\">메인으로</button> <button onclick=\"window.location.href='logout.php'\">로그아웃</button></p>";
+        } ?>
+    </body>
 </html>
