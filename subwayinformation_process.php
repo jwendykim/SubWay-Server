@@ -1,6 +1,5 @@
 <?php
-// 사용자로부터 출발역과 도착역을 입력받습니다.
-$startStation = isset($_POST['startStation']) ? $_POST['startStation'] : "";
+// 사용자로부터 도착역을 입력받습니다.
 $destinationStation = isset($_POST['destinationStation']) ? $_POST['destinationStation'] : "";
 
 $servername = "localhost";
@@ -20,22 +19,27 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8");
 
 // 쿼리 작성
-$query = "SELECT 
-            subwayid,
-            subwayname,
-            direction,
-            descending,
-            toilet,
-            first,
-            last
-          FROM subway
-          WHERE subwayname = ? OR subwayname = ?
-          ORDER BY subwayid ASC
-          LIMIT 2";
+$query = "SELECT
+    subway.toilet,
+    subway.subwayid,
+    subway.subwayname,
+    subway.direction,
+    subway.descending,
+    GROUP_CONCAT(fastexit.exitnumber) AS exitnumbers,
+    subway.first,
+    subway.last
+FROM
+    fastexit
+JOIN
+    subway ON fastexit.subwayid = subway.subwayid
+WHERE
+    subway.subwayname = ?
+GROUP BY
+    subway.subwayid;";
 
 // 쿼리 실행
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ss", $startStation, $destinationStation);
+$stmt->bind_param("s", $destinationStation);
 $stmt->execute();
 
 // 에러 핸들링
@@ -43,7 +47,7 @@ if ($stmt->errno) {
     die("Query execution failed: " . $stmt->error);
 }
 
-$stmt->bind_result($subwayid, $subwayname, $direction, $descending, $toilet, $first, $last);
+$stmt->bind_result($toilet, $subwayid, $subwayname, $direction, $descending, $exitnumbers, $first, $last);
 
 // 결과 배열 생성
 $resultArray = array();
@@ -55,6 +59,7 @@ while ($stmt->fetch()) {
         "direction" => $direction,
         "descending" => $descending,
         "toilet" => $toilet,
+        "exitnumbers" => explode(",", $exitnumbers),
         "first" => $first,
         "last" => $last
     );
