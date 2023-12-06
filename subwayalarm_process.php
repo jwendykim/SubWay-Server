@@ -104,18 +104,8 @@ $stmt_time->fetch();
 
 $stmt_time->close();
 
-echo "<html lang='en'>
-        <head>
-            <meta charset='UTF-8'>
-            <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-            <title>Subway Time</title>
-        </head>
-        <body>
-            <h1>Subway Time</h1>
-            <p>Total Time: $total_time minutes</p>
-	    <p>Debug: Total Time Variable: " . $total_time . "</p>
-        </body>
-      </html>";
+header('Content-Type: application/json');
+echo json_encode(array('total_time' => $total_time));
 
 // Set SQL_SAFE_UPDATES to 0
 $conn->query("SET SQL_SAFE_UPDATES = 0");
